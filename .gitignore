@@ -38,7 +38,8 @@ bower_components
 build/Release
 
 # Dependency directories
-superhero-app/node_modules/
+client/node_modules/
+server/node_modules/
 jspm_packages/
 
 # TypeScript v1 declaration files
@@ -70,7 +71,8 @@ typings/
 
 # dotenv environment variables file
 .env
-.env.test
+client/.env
+server/.env
 
 # parcel-bundler cache (https://parceljs.org/)
 .cache

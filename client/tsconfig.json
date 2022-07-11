@@ -7,6 +7,12 @@
       "dom.iterable",
       "esnext"
     ],
+    "baseUrl": "./",
+    "paths": {
+      "@/*": ["*"]
+      // "@api/*": ["api/*"],
+      // "@components/*": ["src/components/*"]
+     },
     "noImplicitAny": true,
     "noImplicitThis": true,
     "strictNullChecks": true,
