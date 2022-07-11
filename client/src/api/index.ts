@@ -7,8 +7,8 @@ const client = axios.create({
 });
 
 const superheroApi = {
-  getSuperhero(superheroId: Number) {
-    return client.get(`/${superheroId}`);
+  getSuperheroes() {
+    return client.get("/teams/");
   },
 };
 

@@ -6,9 +6,9 @@ import superheroApi from "./api";
 
 function App() {
   const getBatman = useCallback(async () => {
-    const { getSuperhero } = superheroApi;
-    const batmanBody = await getSuperhero(69);
-    console.log("batman body: ", batmanBody);
+    const { getSuperheroes } = superheroApi;
+    const heroes = await getSuperheroes();
+    console.log("heroes body: ", heroes);
   }, []);
 
   return (
