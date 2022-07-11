@@ -10,17 +10,26 @@ app.get('/', (req, res) => {
 
 app.get('/teams', async (req, res) => {
   const teamIds = generateBothTeamIds();
+  const teamA = [...teamIds].slice(0, 5);
+  const teamB = [...teamIds].slice(5, 10);
     
-  let teamRequests = teamIds.map(heroId => {
+  let teamARequests = teamA.map(heroId => {
+    return new Promise((resolve, reject) => {
+      buildHeroFinalForm(heroId).then((builtHero) => resolve(builtHero));
+    })
+  })
+  let teamBRequests = teamB.map(heroId => {
     return new Promise((resolve, reject) => {
       buildHeroFinalForm(heroId).then((builtHero) => resolve(builtHero));
     })
   })
   
-  Promise.all(teamRequests).then((teamsData) => {
-    console.log(teamsData);
-    res.send(`Teams Assemble!!!: ${JSON.stringify(teamsData)}`);
-  });
+  const teamAData = await Promise.all(teamARequests);
+  const teamBData = await Promise.all(teamBRequests);
+
+  console.log("team A! -->", teamAData);
+  console.log("team B! -->", teamBData);
+  res.send(`Teams Assemble!!!: ${JSON.stringify(teamAData)}`);
 })
 
 app.listen(port, () => {
