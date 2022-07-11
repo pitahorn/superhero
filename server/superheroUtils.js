@@ -45,3 +45,27 @@ export async function buildHeroFinalForm(heroId) {
     return evillestOfVillains;
   }
 }
+
+export function calculateTeamAlignment(team) {
+  let goodCount = 0;
+  let badCount = 0;
+
+  team.forEach((hero) => {
+    if (hero.biography.alignment === "good") goodCount ++;
+    if (hero.biography.alignment === "bad") badCount ++;
+  })
+
+  if (goodCount > badCount) return "good";
+  return "bad";
+}
+
+export function buildTeamFinalForm(team) {
+  return {
+    alignment: calculateTeamAlignment(team),
+    members: [...team],
+  };
+}
+
+export function buildFiliationCoefficient(heroAlignment, teamAlignment) {
+
+}

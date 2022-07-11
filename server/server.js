@@ -1,5 +1,9 @@
 import express from 'express';
-import { generateBothTeamIds, buildHeroFinalForm } from './superheroUtils.js';
+import { 
+  generateBothTeamIds,
+  buildHeroFinalForm,
+  buildTeamFinalForm,
+} from './superheroUtils.js';
 
 const app = express()
 const port = 3030
@@ -27,9 +31,14 @@ app.get('/teams', async (req, res) => {
   const teamAData = await Promise.all(teamARequests);
   const teamBData = await Promise.all(teamBRequests);
 
-  console.log("team A! -->", teamAData);
-  console.log("team B! -->", teamBData);
-  res.send(`Teams Assemble!!!: ${JSON.stringify(teamAData)}`);
+  const teamAFinalForm = buildTeamFinalForm(teamAData);
+  const teamBFinalForm = buildTeamFinalForm(teamBData);
+
+  console.log("team A! -->", teamAFinalForm);
+  console.log("team B! -->", teamBFinalForm);
+
+
+  res.send(`Teams Assemble!!!: ${JSON.stringify(teamAFinalForm)}`);
 })
 
 app.listen(port, () => {
