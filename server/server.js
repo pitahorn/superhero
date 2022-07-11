@@ -34,11 +34,12 @@ app.get('/teams', async (req, res) => {
   const teamAFinalForm = buildTeamFinalForm(teamAData);
   const teamBFinalForm = buildTeamFinalForm(teamBData);
 
-  console.log("team A! -->", teamAFinalForm);
-  console.log("team B! -->", teamBFinalForm);
-
-
-  res.send(`Teams Assemble!!!: ${JSON.stringify(teamAFinalForm)}`);
+  console.log("Teams Assemble!!");
+  const heroTeams = {
+    teamA: teamAFinalForm,
+    teamB: teamBFinalForm,
+  }
+  res.send(JSON.stringify(heroTeams));
 })
 
 app.listen(port, () => {
