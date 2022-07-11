@@ -1,7 +1,5 @@
-import fetch from 'node-fetch';
 import express from 'express';
-
-const superheroApiUrl = "https://superheroapi.com/api/2183127771827858";
+import { generateBothTeamIds, buildHeroFinalForm } from './superheroUtils.js';
 
 const app = express()
 const port = 3030
@@ -10,14 +8,19 @@ app.get('/', (req, res) => {
   res.send('Superheroes Assemble!!!')
 })
 
-app.get('/teams', (req, res) => {
-
-  /* fetch(superheroApiUrl)
-    .then(response => response.json())
-    .then(json => console.log(json))
-    .catch(err => console.error(err)); */
+app.get('/teams', async (req, res) => {
+  const teamIds = generateBothTeamIds();
+    
+  let teamRequests = teamIds.map(heroId => {
+    return new Promise((resolve, reject) => {
+      buildHeroFinalForm(heroId).then((builtHero) => resolve(builtHero));
+    })
+  })
   
-  res.send('Teams Assemble!!!')
+  Promise.all(teamRequests).then((teamsData) => {
+    console.log(teamsData);
+    res.send(`Teams Assemble!!!: ${JSON.stringify(teamsData)}`);
+  });
 })
 
 app.listen(port, () => {
