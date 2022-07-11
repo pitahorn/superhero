@@ -8,7 +8,7 @@ const client = axios.create({
 
 const superheroApi = {
   getSuperheroes() {
-    return client.get("/teams/");
+    return client.get("/teams");
   },
 };
 

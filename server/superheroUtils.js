@@ -5,16 +5,23 @@ export function randomIntFromInterval(min, max) {
   return Math.floor(Math.random() * (max - min + 1) + min);
 }
 
+export function truncateTwoDecimals(value) {
+  return Math.floor(value * 100) / 100
+}
+
 export function calculateMentalAttack(intelligence, speed, combat, filiationCoefficient) {
-  return intelligence * 0.7 + speed * 0.2 + combat * 0.1 * filiationCoefficient;
+  const calc = intelligence * 0.7 + speed * 0.2 + combat * 0.1 * filiationCoefficient;
+  return truncateTwoDecimals(calc);
 }
 
 export function calculateStrongAttack(strength, power, combat, filiationCoefficient) {
-  return strength * 0.6 + power * 0.2 + combat * 0.2 * filiationCoefficient;
+  const calc = strength * 0.6 + power * 0.2 + combat * 0.2 * filiationCoefficient;
+  return truncateTwoDecimals(calc);
 }
 
 export function calculateFastAttack(speed, durability, strength, filiationCoefficient) {
-  return speed * 0.55 + durability * 0.25 + strength * 0.2 * filiationCoefficient;
+  const calc = speed * 0.55 + durability * 0.25 + strength * 0.2 * filiationCoefficient;
+  return truncateTwoDecimals(calc);
 }
 
 export function generateBothTeamIds() {
@@ -47,7 +54,6 @@ export function buildHeroAttacks(powerstats, filiationCoefficient) {
     power,
     combat,
   } = powerstats;
-
   // Transform to Number:
   return {
     mental: calculateMentalAttack(
@@ -77,7 +83,26 @@ export function buildHeroHealthPoints( powerstats, actualStamina) {
   const statsWithCoefficients = (Number(strength) * 0.8 + Number(durability) * 0.7 + Number(power)) / 2;
   const flooredValue = Math.floor(statsWithCoefficients * (1 + ASAverage / 10));
   return flooredValue + 100;
+}
 
+export function cleanHeroPowerStats(powerstats) {
+  // SUPUESTO 2: Cuando alguna stat es null, se reemplazará por un random de 0 a 50.
+  const {
+    intelligence,
+    strength,
+    speed,
+    durability,
+    power,
+    combat,
+  } = powerstats;
+  return {
+    intelligence: Number(intelligence) || randomIntFromInterval(0,50),
+    strength: Number(strength) || randomIntFromInterval(0,50),
+    speed: Number(speed) || randomIntFromInterval(0,50),
+    durability: Number(durability) || randomIntFromInterval(0,50),
+    power: Number(power) || randomIntFromInterval(0,50),
+    combat: Number(combat) || randomIntFromInterval(0,50),
+  }
 }
 
 export function buildHeroNewStats(powerstats, actualStamina, filiationCoefficient) {
@@ -96,11 +121,15 @@ export async function buildHeroFinalForm(heroId) {
     
     // Clean the object:
     const {response, ...parsedHeroData} = heroResponse;
+
+    // Clean the powerstats in case there are null values:
+    const cleanPowerstats = cleanHeroPowerStats(heroResponse.powerstats);
     
     // Build new Stats:
-    const heroActualStamina = buildHeroActualStamina(heroResponse.powerstats);
+    const heroActualStamina = buildHeroActualStamina(cleanPowerstats);
 
     parsedHeroData.actualStamina = heroActualStamina;
+    parsedHeroData.powerstats = cleanPowerstats;
     return parsedHeroData;
   } catch (error) {
     console.error(error)
