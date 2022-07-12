@@ -2,7 +2,11 @@ import Grid from '@mui/material/Grid';
 import HeroCard from "./HeroCard";
 import { TeamInterface } from "./../api/heroInterface";
 
-export default function TeamGrid({ alignment, members }: TeamInterface) {
+interface TeamGridProps extends TeamInterface {
+  HPTracker: Record<string, number>,
+}
+
+export default function TeamGrid({ alignment, members, HPTracker }: TeamGridProps) {
   return (
     <>
       <h2>
@@ -16,6 +20,7 @@ export default function TeamGrid({ alignment, members }: TeamInterface) {
         {members?.map((hero) => (
           <Grid item xs={2} sm={4} md={3} lg={2} key={hero.id}>
             <HeroCard
+              healthPoints={HPTracker[hero.id]}
               hero={hero}
             />
           </Grid>

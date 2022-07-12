@@ -25,7 +25,7 @@ export default function HeroCard({
         component="img"
         height="320"
         image={hero.image.url || placeholderHeroImage}
-        sx={healthPoints === 0 ? { filter: "grayscale(100%)" } : {}}
+        sx={healthPoints && healthPoints <= 0 ? { filter: "grayscale(100%)" } : {}}
         alt="hero image"
       />
       <CardContent>

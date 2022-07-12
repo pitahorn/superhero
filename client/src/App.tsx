@@ -13,7 +13,14 @@ function App() {
   const [teamB, setTeamB] = useState<TeamInterface>({ alignment: "", members: [] });
 
   // * Call custom hooks:
-  const { fighting, handleStartFight, attackMessage } = useHeroFight({ teamA, teamB });
+  const {
+    fighting,
+    handleStartFight,
+    attackMessage,
+    fightCount,
+    setFightCount,
+    HPTracker,
+  } = useHeroFight({ teamA, teamB, setTeamA, setTeamB });
 
   const areTeamsArrived = useMemo(() => {
     return teamA?.members.length && teamB?.members.length;
@@ -38,7 +45,16 @@ function App() {
       <header className="App-header">
         <img src={image} className="App-logo" alt="logo" />
         { fighting ?
-          <AttackAlert attackMessage={attackMessage}/>
+          <>
+            <Button
+            variant="contained"
+            size="large"
+            onClick={ () => setFightCount(fightCount + 1) }
+          >
+            NEXT ATTACK!!
+          </Button>
+            <AttackAlert attackMessage={attackMessage}/>
+          </>
           : 
           <Button
             variant="contained"
@@ -54,6 +70,7 @@ function App() {
             <TeamGrid
               members={ teamA.members }
               alignment={ teamA.alignment }
+              HPTracker={HPTracker}
               /> 
             <h2>
               VS
@@ -61,7 +78,8 @@ function App() {
             <TeamGrid
               members={ teamB.members }
               alignment={ teamB.alignment }
-              /> 
+              HPTracker={HPTracker}
+            /> 
           </>
         : <></>}
       </header>
