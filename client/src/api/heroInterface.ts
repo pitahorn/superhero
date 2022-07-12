@@ -14,7 +14,7 @@ export interface HeroInterface {
     power ?: number,
     combat ?: number,
   },
-  id: number,
+  id: string,
   name: string,
   biography: {
     aliases: string[],
@@ -45,8 +45,8 @@ export interface HeroInterface {
 }
 
 export interface TeamInterface {
-  alignment?: string,
-  members?: HeroInterface[],
+  alignment: string,
+  members: HeroInterface[],
 }
 
 export interface HeroApiInterface {

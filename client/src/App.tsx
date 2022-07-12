@@ -1,14 +1,23 @@
-import { useCallback, useState } from "react";
+import { useCallback, useState, useMemo } from "react";
 import image from "./super_logo.png";
 import "./App.css";
 import Button from '@mui/material/Button';
 import TeamGrid from "./components/TeamGrid";
+import useHeroFight from "./hooks/useHeroFight";
 import { HeroApiInterface, TeamInterface } from "./api/heroInterface";
 import superheroApi from "./api";
+import AttackAlert from "./components/AttackAlert";
 
 function App() {
-  const [teamA, setTeamA] = useState<TeamInterface>({});
-  const [teamB, setTeamB] = useState<TeamInterface>({});
+  const [teamA, setTeamA] = useState<TeamInterface>({ alignment: "", members: [] });
+  const [teamB, setTeamB] = useState<TeamInterface>({ alignment: "", members: [] });
+
+  // * Call custom hooks:
+  const { fighting, handleStartFight, attackMessage } = useHeroFight({ teamA, teamB });
+
+  const areTeamsArrived = useMemo(() => {
+    return teamA?.members.length && teamB?.members.length;
+  }, [teamA, teamB]);
 
   // * Handler Functions
   const getHeroes = useCallback(async () => {
@@ -28,14 +37,19 @@ function App() {
       />
       <header className="App-header">
         <img src={image} className="App-logo" alt="logo" />
-        <Button
-          variant="contained"
-          size="large"
-          onClick={ getHeroes }
-        >
-          CALL YOUR SUPER TEAMS!!
-        </Button>
-        {teamA?.members && teamB?.members ?
+        { fighting ?
+          <AttackAlert attackMessage={attackMessage}/>
+          : 
+          <Button
+            variant="contained"
+            size="large"
+            onClick={ !areTeamsArrived ? getHeroes : handleStartFight }
+            disabled={Boolean(fighting)}
+          >
+            {!areTeamsArrived ?  "CALL YOUR SUPER TEAMS!!" : "START FIGHT!!"}
+          </Button>
+        }
+        {areTeamsArrived ?
           <>
             <TeamGrid
               members={ teamA.members }
