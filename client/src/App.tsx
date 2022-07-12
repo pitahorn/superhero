@@ -4,6 +4,7 @@ import "./App.css";
 import Button from '@mui/material/Button';
 import TeamGrid from "./components/TeamGrid";
 import useHeroFight from "./hooks/useHeroFight";
+import { Paper } from "@mui/material";
 import { HeroApiInterface, TeamInterface } from "./api/heroInterface";
 import superheroApi from "./api";
 import AttackAlert from "./components/AttackAlert";
@@ -68,7 +69,7 @@ function App() {
         rel="stylesheet"
         href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700&display=swap"
       />
-      <header className="App-header">
+      <div className="App-header">
         <img src={image} className="App-logo" alt="logo" />
         <Button
           variant="contained"
@@ -79,23 +80,34 @@ function App() {
         </Button>
         <AttackAlert attackMessage={attackMessage}/>
         {areTeamsArrived ?
-          <>
-            <TeamGrid
-              members={ teamA.members }
-              alignment={ teamA.alignment }
-              HPTracker={HPTracker}
-              /> 
-            <h2>
-              VS
-            </h2>
-            <TeamGrid
-              members={ teamB.members }
-              alignment={ teamB.alignment }
-              HPTracker={HPTracker}
-            /> 
-          </>
+          <Paper
+            sx={{
+              backgroundColor: "#282c34",
+              width: "100%",
+              display: "flex",
+              marginBottom: 8,
+            }}
+          >
+              <>
+                <TeamGrid
+                  members={ teamA.members }
+                  alignment={ teamA.alignment }
+                  HPTracker={HPTracker}
+                  teamName="A"
+                  /> 
+                <h2 style={{color: "white"}}>
+                  VS
+                </h2>
+                <TeamGrid
+                  members={ teamB.members }
+                  alignment={ teamB.alignment }
+                  HPTracker={HPTracker}
+                  teamName="B"
+                /> 
+              </>
+          </Paper>
         : <></>}
-      </header>
+      </div>
     </div>
   );
 }

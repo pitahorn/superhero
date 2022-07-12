@@ -12,6 +12,7 @@ export default function AttackAlert({ attackMessage }: AttackAlertProps) {
       icon={<LocalFireDepartmentIcon fontSize="inherit" />}
       severity="error"
       variant="standard"
+      sx={{ margin: 4 }}
     >
       { attackMessage }
     </Alert>

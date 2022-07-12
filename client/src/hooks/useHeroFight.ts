@@ -76,10 +76,11 @@ export default function useHeroFight({
       const newHPTracker = {...HPTracker};
       newHPTracker[attackedID] = newHP;
       setHPTracker(newHPTracker);
-
+      
       // Set the attack message
       const newMessage = `${attacker?.name} has attacked ${attacked?.name} with ${attackType} (${attacker?.attacks[attackType]})!! ${attacked?.name} now has ${newHP} HP.`;
       console.log(newMessage);
+      if (newHP <= 0) console.log(`${attacked?.name} has died!! U.U`);
       setAttackMessage(newMessage);
     } else {
       const attacker = teamB.members.find((hero) => hero.id === attackerID);
@@ -98,6 +99,7 @@ export default function useHeroFight({
       // Set the attack message
       const newMessage = `${attacker?.name} has attacked ${attacked?.name} with ${attackType} (${attacker?.attacks[attackType]})!! ${attacked?.name} now has ${newHP} HP.`;
       console.log(newMessage);
+      if (newHP <= 0) console.log(`${attacked?.name} has died!! U.U`);
       setAttackMessage(newMessage);
     }
   }, [HPTracker, teamA.members, teamB.members])
@@ -142,7 +144,8 @@ export default function useHeroFight({
       setAttackingTeam("A");
     }
   
-  }, [fightCount, fighting])
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [fightCount, fighting]) // <-- DO NOT ADD MORE DEPENDENCIES ON THIS!!
 
   // This useEffect will check for a loser Team
   useEffect(() => {
@@ -150,14 +153,14 @@ export default function useHeroFight({
     if (!fighting) return;
     // the memoized values teamAIds and teamBIds contain alive IDs only:
     if (teamAIds.length === 0) {
-      const newMessage = "TEAM A HAS LOST!!"
+      const newMessage = "TEAM B HAS WON!!"
       console.log(newMessage);
       setAttackMessage(newMessage);
       // Stop the fight:
       setFighting(false);
     }
     if (teamBIds.length === 0) {
-      const newMessage = "TEAM B HAS LOST!!"
+      const newMessage = "TEAM A HAS WON!!"
       console.log(newMessage);
       setAttackMessage(newMessage);
       // Stop the fight:
