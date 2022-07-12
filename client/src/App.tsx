@@ -22,10 +22,17 @@ function App() {
     HPTracker,
   } = useHeroFight({ teamA, teamB, setTeamA, setTeamB });
 
+  // * Memoized variables
   const areTeamsArrived = useMemo(() => {
     return teamA?.members.length && teamB?.members.length;
   }, [teamA, teamB]);
-
+  
+  const buttonMessage = useMemo(() => {
+    if (fighting) return "NEXT ATTACK!!";
+    if (!areTeamsArrived) return "CALL YOUR SUPER TEAMS!!";
+    return "START FIGHT!!";
+  }, [areTeamsArrived, fighting]);
+  
   // * Handler Functions
   const getHeroes = useCallback(async () => {
     const { getSuperheroes } = superheroApi;
@@ -36,6 +43,25 @@ function App() {
     setTeamB(heroesTeams.teamB);
   }, []);
 
+  const handleButtonClick = useCallback(() => {
+    if (fighting) {
+      setFightCount(fightCount + 1);
+    } else {
+      if (!areTeamsArrived) {
+        getHeroes();
+      } else {
+        handleStartFight();
+      }
+    }
+  }, [
+    areTeamsArrived,
+    fightCount,
+    fighting,
+    getHeroes,
+    handleStartFight,
+    setFightCount
+  ]);
+
   return (
     <div className="App">
       <link
@@ -44,27 +70,14 @@ function App() {
       />
       <header className="App-header">
         <img src={image} className="App-logo" alt="logo" />
-        { fighting ?
-          <>
-            <Button
-            variant="contained"
-            size="large"
-            onClick={ () => setFightCount(fightCount + 1) }
-          >
-            NEXT ATTACK!!
-          </Button>
-            <AttackAlert attackMessage={attackMessage}/>
-          </>
-          : 
-          <Button
-            variant="contained"
-            size="large"
-            onClick={ !areTeamsArrived ? getHeroes : handleStartFight }
-            disabled={Boolean(fighting)}
-          >
-            {!areTeamsArrived ?  "CALL YOUR SUPER TEAMS!!" : "START FIGHT!!"}
-          </Button>
-        }
+        <Button
+          variant="contained"
+          size="large"
+          onClick={ handleButtonClick }
+        >
+          { buttonMessage }
+        </Button>
+        <AttackAlert attackMessage={attackMessage}/>
         {areTeamsArrived ?
           <>
             <TeamGrid

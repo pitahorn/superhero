@@ -28,8 +28,6 @@ export default function useHeroFight({
   const [HPTracker, setHPTracker] = useState<Record<string, number>>({});
   const [attackMessage, setAttackMessage] = useState<string>("");
   const [fightCount, setFightCount] = useState<number>(0);
-  const [teamADeaths, setTeamADeaths] = useState<number>(0);
-  const [teamBDeaths, setTeamBDeaths] = useState<number>(0);
 
   const allHeroes = useMemo(() => {
     const allHeroes: HeroInterface[] = [];
@@ -120,6 +118,9 @@ export default function useHeroFight({
 
   // The attack simulation will run on the useEffect, to trigger the card re-renders:
   useEffect(() => {
+    // early return when there are still no teams:
+    if (!fighting) return;
+
     // 10 iterations to test it out:
     console.log("Fight Number ", fightCount);
     console.log("HP Tracker on handleFight: ", HPTracker);
@@ -141,12 +142,28 @@ export default function useHeroFight({
       setAttackingTeam("A");
     }
   
-  }, [fightCount])
+  }, [fightCount, fighting])
 
-  // This useEffect will check for casualties...
+  // This useEffect will check for a loser Team
   useEffect(() => {
-    const dead = 0;
-  }, [HPTracker]);
+    // early return when there are still no teams:
+    if (!fighting) return;
+    // the memoized values teamAIds and teamBIds contain alive IDs only:
+    if (teamAIds.length === 0) {
+      const newMessage = "TEAM A HAS LOST!!"
+      console.log(newMessage);
+      setAttackMessage(newMessage);
+      // Stop the fight:
+      setFighting(false);
+    }
+    if (teamBIds.length === 0) {
+      const newMessage = "TEAM B HAS LOST!!"
+      console.log(newMessage);
+      setAttackMessage(newMessage);
+      // Stop the fight:
+      setFighting(false);
+    }
+  }, [fighting, teamAIds, teamBIds]);
 
 
   return {
